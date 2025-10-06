@@ -1,0 +1,4277 @@
+import { OpenAPIV3 } from "openapi-types";
+
+export const schema: OpenAPIV3.Document = {
+  openapi: "3.0.3",
+  info: {
+    title: "MG Node Transport API",
+    version: "1.0.0",
+    description: "MG Node Transport API",
+  },
+  servers: [
+    {
+      url: "/api/transport/v1",
+    },
+  ],
+  tags: [
+    {
+      name: "Channel",
+    },
+    {
+      name: "File",
+    },
+    {
+      name: "Template",
+    },
+    {
+      name: "Message",
+    },
+  ],
+  paths: {
+    "/channels": {
+      get: {
+        summary: "Список каналов",
+        description: "Возвращает список каналов",
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        tags: ["Channel"],
+        operationId: "ListChannels",
+        parameters: [
+          {
+            $ref: "#/components/parameters/IDQuery",
+          },
+          {
+            $ref: "#/components/parameters/ChannelActiveQuery",
+          },
+          {
+            $ref: "#/components/parameters/ChannelTypeQuery",
+          },
+          {
+            $ref: "#/components/parameters/SinceQuery",
+          },
+          {
+            $ref: "#/components/parameters/UntilQuery",
+          },
+          {
+            $ref: "#/components/parameters/LimitQuery",
+          },
+        ],
+        responses: {
+          "200": {
+            $ref: "#/components/responses/ChannelsListResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+      post: {
+        summary: "Активация канала",
+        description: "Активирует новый канал с заданными параметрами",
+        operationId: "ActivateChannel",
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        tags: ["Channel"],
+        requestBody: {
+          $ref: "#/components/requestBodies/ActivateChannelRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/ActivateChannelResponse",
+          },
+          "201": {
+            $ref: "#/components/responses/ActivateChannelResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/channels/{channel_id}": {
+      delete: {
+        summary: "Деактивация канала",
+        description: "Деактивирует существующий канал",
+        operationId: "DeactivateChannel",
+        tags: ["Channel"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        parameters: [
+          {
+            $ref: "#/components/parameters/ChannelIdPath",
+          },
+        ],
+        responses: {
+          "200": {
+            $ref: "#/components/responses/DeactivateChannelResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+      put: {
+        summary: "Обновление канала",
+        description: "Обновление параметров существующего канала",
+        operationId: "UpdateChannel",
+        tags: ["Channel"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        parameters: [
+          {
+            $ref: "#/components/parameters/ChannelIdPath",
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/UpdateChannelRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/UpdateChannelResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/files/upload": {
+      post: {
+        summary: "Загрузка файла",
+        description: "Загружает файл в репозиторий и возвращает информацию о нём",
+        operationId: "UploadFile",
+        tags: ["File"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "string",
+                format: "binary",
+              },
+            },
+          },
+          // @ts-ignore
+          "x-originalParamName": "File",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/UploadFileResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/files/upload_by_url": {
+      post: {
+        summary: "Загрузка файла по URL",
+        description: "Загружает файл из внешних источников по URL",
+        operationId: "UploadFileByUrl",
+        tags: ["File"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/UploadFileByUrlRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/UploadFileResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/files/{id}": {
+      get: {
+        summary: "Информация о файле",
+        description: "Возвращает информацию о файле по его UUID",
+        operationId: "GetFileUrl",
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        tags: ["File"],
+        parameters: [
+          {
+            $ref: "#/components/parameters/FileUUIDPath",
+          },
+        ],
+        responses: {
+          "200": {
+            $ref: "#/components/responses/FileResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/channels/{channel_id}/templates": {
+      post: {
+        summary: "Активация шаблона",
+        description: "Активирует новый шаблон сообщения для канала",
+        operationId: "ActivateTemplate",
+        tags: ["Template"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        parameters: [
+          {
+            $ref: "#/components/parameters/ChannelIdPath",
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/ActivateTemplateRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/channels/{channel_id}/templates/{template_code}": {
+      delete: {
+        summary: "Деактивация шаблона",
+        description: "Деактивирует существующий шаблон сообщения для канала",
+        operationId: "DeactivateTemplate",
+        tags: ["Template"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        parameters: [
+          {
+            $ref: "#/components/parameters/ChannelIdPath",
+          },
+          {
+            $ref: "#/components/parameters/TemplateCodePath",
+          },
+        ],
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+      put: {
+        summary: "Обновление шаблона",
+        description: "Обновление существующего шаблона сообщения для канала",
+        operationId: "UpdateTemplate",
+        tags: ["Template"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        parameters: [
+          {
+            $ref: "#/components/parameters/ChannelIdPath",
+          },
+          {
+            $ref: "#/components/parameters/TemplateCodePath",
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/UpdateTemplateRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/templates": {
+      get: {
+        summary: "Список шаблонов",
+        description: "Возвращает список доступных шаблонов сообщений для данного транспорта",
+        operationId: "GetTemplates",
+        tags: ["Template"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        responses: {
+          "200": {
+            $ref: "#/components/responses/TemplateListResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/messages": {
+      delete: {
+        summary: "Удаление сообщения",
+        description: "Удаляет созданное сообщение, если канал поддерживает такую операцию",
+        operationId: "DeleteMessage",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/DeleteMessageRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/MessageResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+      post: {
+        summary: "Отправка сообщения",
+        description: "Отправляет сообщение",
+        operationId: "SendMessage",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/SendMessageRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/SendMessageResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+      put: {
+        summary: "Редактирование сообщения",
+        description: "Изменяет созданное сообщение, если канал поддерживает такую операцию",
+        operationId: "EditMessage",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/EditMessageRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/messages/history": {
+      post: {
+        summary: "Отправка сообщения из истории",
+        description: "Отправляет сообщение из истории",
+        operationId: "SendHistoryMessage",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/SendHistoryMessageRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/SendMessageResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/messages/ack": {
+      post: {
+        summary: "Подтверждение доставки сообщения",
+        description: "Подтверждает успешную доставку сообщения получателю во внешней системе",
+        operationId: "AckMessage",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/AckMessageRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/messages/read": {
+      post: {
+        summary: "Пометка сообщения как прочитанного",
+        description: "Помечает сообщение как прочитанное",
+        operationId: "MarkMessageRead",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/MarkMessageReadRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/messages/read_until": {
+      post: {
+        summary: "Пометка сообщений как прочитанных до указанной метки времени",
+        description: "Помечает все сообщения в канале как прочитанные до указанной метки времени",
+        operationId: "MarkMessagesReadUntil",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/MarkMessagesReadUntilRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/MarkMessagesReadUntilResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/messages/restore": {
+      post: {
+        summary: "Восстановление удалённого сообщения",
+        description: "Восстанавливает ранее удалённое сообщение и возвращает его",
+        operationId: "RestoreMessage",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/RestoreMessageRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/MessageResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+    "/messages/reaction": {
+      delete: {
+        summary: "Удаление реакции на сообщение",
+        description: "Удаляет реакцию из сообщения",
+        operationId: "DeleteMessageReaction",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/DeleteReactionRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+      post: {
+        summary: "Добавление реакции к сообщению",
+        description: "Добавляет одну из разрешённых каналом реакций к сообщению",
+        operationId: "AddMessageReaction",
+        tags: ["Message"],
+        security: [
+          {
+            transport_token: [],
+          },
+        ],
+        requestBody: {
+          $ref: "#/components/requestBodies/AddReactionRequest",
+        },
+        responses: {
+          "200": {
+            $ref: "#/components/responses/EmptyResponse",
+          },
+          default: {
+            $ref: "#/components/responses/ErrorResponse",
+          },
+        },
+      },
+    },
+  },
+  components: {
+    securitySchemes: {
+      transport_token: {
+        description: "Токен для авторизации",
+        type: "apiKey",
+        in: "header",
+        name: "X-Transport-Token",
+      },
+    },
+    parameters: {
+      IDQuery: {
+        description: "Идентификатор запрашиваемого объекта",
+        in: "query",
+        name: "id",
+        schema: {
+          format: "int",
+          minimum: 1,
+          type: "integer",
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+        // @ts-ignore
+        "x-oapi-codegen-extra-tags": {
+          binding: "omitempty,min=1",
+        },
+        // @ts-ignore
+        "x-go-name": "ID",
+      },
+      LimitQuery: {
+        description: "Количество элементов в ответе. Значение по умолчанию - 100",
+        in: "query",
+        name: "limit",
+        schema: {
+          format: "int",
+          maximum: 1000,
+          minimum: 1,
+          type: "integer",
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+        // @ts-ignore
+        "x-oapi-codegen-extra-tags": {
+          binding: "omitempty,min=1,max=1000",
+        },
+      },
+      SinceQuery: {
+        description: "Нижний предел даты последнего обновления объекта",
+        in: "query",
+        name: "since",
+        schema: {
+          format: "date-time",
+          type: "string",
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+        // @ts-ignore
+        "x-oapi-codegen-extra-tags": {
+          time_format: "2006-01-02T15:04:05.999999Z07:00",
+          time_utc: "1",
+        },
+      },
+      UntilQuery: {
+        description: "Верхний предел даты последнего обновления объекта",
+        in: "query",
+        name: "until",
+        schema: {
+          format: "date-time",
+          type: "string",
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+        // @ts-ignore
+        "x-oapi-codegen-extra-tags": {
+          time_format: "2006-01-02T15:04:05.999999Z07:00",
+          time_utc: "1",
+        },
+      },
+      ChannelActiveQuery: {
+        description: "Флаг активности канала",
+        in: "query",
+        name: "active",
+        schema: {
+          $ref: "#/components/schemas/Boolean",
+        },
+        // @ts-ignore
+        "x-oapi-codegen-extra-tags": {
+          binding: "omitempty,enum-valid",
+        },
+      },
+      ChannelTypeQuery: {
+        description: "Типы каналов",
+        in: "query",
+        name: "types",
+        schema: {
+          items: {
+            $ref: "#/components/schemas/ChannelType",
+          },
+          type: "array",
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+        // @ts-ignore
+        "x-oapi-codegen-extra-tags": {
+          binding: "omitempty,enum-valid",
+        },
+      },
+      ChannelIdPath: {
+        description: "Идентификатор канала",
+        in: "path",
+        name: "channel_id",
+        required: true,
+        schema: {
+          format: "int64",
+          type: "integer",
+        },
+        // @ts-ignore
+        "x-go-name": "ChannelID",
+      },
+      FileUUIDPath: {
+        description: "UUID файла",
+        in: "path",
+        name: "id",
+        required: true,
+        schema: {
+          type: "string",
+        },
+      },
+      TemplateCodePath: {
+        description: "Код шаблона",
+        in: "path",
+        name: "template_code",
+        required: true,
+        schema: {
+          type: "string",
+        },
+      },
+    },
+    schemas: {
+      Boolean: {
+        description: "Логический тип",
+        type: "string",
+        enum: ["1", "0", "true", "false"],
+        // @ts-ignore
+        "x-enumNames": ["One", "Zero", true, false],
+      },
+      Channel: {
+        description: "Канал",
+        type: "object",
+        properties: {
+          id: {
+            type: "integer",
+            format: "int64",
+            example: 1,
+            // @ts-ignore
+            "x-go-name": "ID",
+          },
+          external_id: {
+            type: "string",
+            example: "ch2847",
+            // @ts-ignore
+            "x-go-name": "ExternalID",
+            nullable: true,
+          },
+          name: {
+            type: "string",
+            example: "Example Channel",
+            nullable: true,
+          },
+          type: {
+            $ref: "#/components/schemas/ChannelType",
+          },
+          is_active: {
+            type: "boolean",
+            example: true,
+          },
+          settings: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/ChannelSettings",
+              },
+            ],
+            nullable: true,
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          created_at: {
+            type: "string",
+            format: "date-time",
+            example: "2006-01-02T15:04:05.999999Z07:00",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              time_format: "2006-01-02T15:04:05.999999Z07:00",
+            },
+          },
+          updated_at: {
+            type: "string",
+            format: "date-time",
+            example: "2006-01-02T15:04:05.999999Z07:00",
+            nullable: true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              time_format: "2006-01-02T15:04:05.999999Z07:00",
+            },
+          },
+          activated_at: {
+            type: "string",
+            format: "date-time",
+            example: "2006-01-02T15:04:05.999999Z07:00",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              time_format: "2006-01-02T15:04:05.999999Z07:00",
+            },
+          },
+          deactivated_at: {
+            type: "string",
+            format: "date-time",
+            example: "2006-01-02T15:04:05.999999Z07:00",
+            nullable: true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              time_format: "2006-01-02T15:04:05.999999Z07:00",
+            },
+          },
+        },
+        required: ["id", "type", "created_at", "activated_at", "is_active"],
+      },
+      ChannelType: {
+        description: "Типы каналов",
+        type: "string",
+        enum: [
+          "telegram",
+          "fbmessenger",
+          "viber",
+          "whatsapp",
+          "skype",
+          "vk",
+          "instagram",
+          "consultant",
+          "yandex_chat",
+          "odnoklassniki",
+          "max",
+          "ozon",
+          "wildberries",
+          "yandex_market",
+          "mega_market",
+          "avito",
+          "drom",
+          "youla",
+          "custom",
+        ],
+        example: "telegram",
+      },
+      ChannelFeature: {
+        description: "Поддержка операций с сообщениями данного типа",
+        type: "string",
+        enum: ["none", "receive", "send", "both"],
+        example: "both",
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      CustomerExternalId: {
+        description: "Поддержка внешних идентификаторов клиентов",
+        type: "string",
+        enum: ["any", "phone"],
+        example: "phone",
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      AudioMessageSetting: {
+        description: "Поддержка аудио сообщений",
+        type: "object",
+        properties: {
+          creating: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          deleting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          quoting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          reaction: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          max_item_size: {
+            description: "Максимальный размер аудиофайла для отправки",
+            format: "int64",
+            type: "integer",
+          },
+          max_items_count: {
+            description: "Максимальное количество аудиовложений на сообщение",
+            format: "int",
+            type: "integer",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      FileMessageSetting: {
+        description: "Поддержка файловых сообщений",
+        type: "object",
+        properties: {
+          creating: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          deleting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          editing: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          quoting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          reaction: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          max_item_size: {
+            description: "Максимальный размер файла для отправки",
+            format: "int64",
+            type: "integer",
+          },
+          max_items_count: {
+            description: "Максимальное количество файловых вложений на сообщение",
+            format: "int",
+            type: "integer",
+          },
+          note_max_chars_count: {
+            description: "Максимальное количество символов в аннотации файлового сообщения",
+            format: "uint16",
+            type: "integer",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      ImageMessageSetting: {
+        description: "Поддержка медиа-сообщений",
+        type: "object",
+        properties: {
+          creating: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          deleting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          editing: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          quoting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          reaction: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          max_item_size: {
+            description: "Максимальный размер изображения для отправки",
+            format: "int64",
+            type: "integer",
+          },
+          max_items_count: {
+            description: "Максимальное количество медиа-вложений на сообщение",
+            format: "int",
+            type: "integer",
+          },
+          note_max_chars_count: {
+            description: "Максимальное количество символов в аннотации медиа-сообщения",
+            format: "uint16",
+            type: "integer",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      TextMessageSetting: {
+        description: "Поддержка текстовых сообщений",
+        type: "object",
+        properties: {
+          creating: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          deleting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          editing: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          quoting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          reaction: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          max_chars_count: {
+            description: "Максимальное количество символов в текстовом сообщении",
+            format: "uint16",
+            type: "integer",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      OrderMessageSetting: {
+        description: "Поддержка сообщений о заказах",
+        type: "object",
+        properties: {
+          creating: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          deleting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          editing: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          reaction: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          quoting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      ProductMessageSetting: {
+        description: "Поддержка сообщений о продуктах",
+        type: "object",
+        properties: {
+          creating: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          deleting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          editing: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          reaction: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          quoting: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      StatusSetting: {
+        description: "Передача информации о статусе сообщения",
+        type: "object",
+        properties: {
+          delivered: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          read: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      SendingPolicyAfterReplyTimeout: {
+        description: "Типы сообщений, отправляемых после истечения времени ответа",
+        type: "string",
+        enum: ["no", "template"],
+        example: "no",
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      SendingPolicyNewCustomer: {
+        description: "Типы сообщений для отправки новому клиенту",
+        type: "string",
+        enum: ["no", "template", "text"],
+        example: "no",
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      SendingPolicyOutgoing: {
+        description: "Поддержка исходящих сообщений",
+        type: "string",
+        enum: ["allowed", "restricted"],
+        example: "allowed",
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      SendingPolicy: {
+        description: "Политика отправки сообщений",
+        type: "object",
+        properties: {
+          after_reply_timeout: {
+            $ref: "#/components/schemas/SendingPolicyAfterReplyTimeout",
+          },
+          new_customer: {
+            $ref: "#/components/schemas/SendingPolicyNewCustomer",
+          },
+          outgoing: {
+            $ref: "#/components/schemas/SendingPolicyOutgoing",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      Suggestions: {
+        description: "Поддержка типов быстрых ответов",
+        type: "object",
+        properties: {
+          email: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          phone: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          text: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+          url: {
+            $ref: "#/components/schemas/ChannelFeature",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      TemplateSetting: {
+        description: "Поддержка шаблонов сообщений",
+        type: "object",
+        properties: {
+          creation: {
+            description: "Поддержка создания шаблонов в системе",
+            example: true,
+            type: "boolean",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      WAChannelQuality: {
+        description: "Качество канала WhatsApp",
+        type: "string",
+        enum: ["high", "medium", "low"],
+        example: "high",
+      },
+      WAChannelStatus: {
+        description: "Статус канала WhatsApp",
+        type: "string",
+        enum: ["connected", "flagged", "offline", "pending", "restricted"],
+        example: "connected",
+      },
+      WAChannelProperties: {
+        description: "Свойства канала WhatsApp",
+        type: "object",
+        properties: {
+          channel_quality: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/WAChannelQuality",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,enum-valid",
+            },
+          },
+          channel_status: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/WAChannelStatus",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,enum-valid",
+            },
+          },
+          tier: {
+            format: "int",
+            type: "integer",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=0",
+            },
+          },
+        },
+      },
+      Reactions: {
+        description: "Поддержка работы с реакциями для сообщений",
+        type: "object",
+        properties: {
+          dictionary: {
+            description: "Словарь доступных реакций",
+            type: "array",
+            items: {
+              type: "string",
+            },
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          max_count: {
+            description: "Максимальное количество реакций, добавляемых системой",
+            format: "int64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      ChannelSettings: {
+        description: "Настройки канала",
+        type: "object",
+        properties: {
+          text: {
+            $ref: "#/components/schemas/TextMessageSetting",
+          },
+          audio: {
+            $ref: "#/components/schemas/AudioMessageSetting",
+          },
+          file: {
+            $ref: "#/components/schemas/FileMessageSetting",
+          },
+          image: {
+            $ref: "#/components/schemas/ImageMessageSetting",
+          },
+          order: {
+            $ref: "#/components/schemas/OrderMessageSetting",
+          },
+          product: {
+            $ref: "#/components/schemas/ProductMessageSetting",
+          },
+          customer_external_id: {
+            $ref: "#/components/schemas/CustomerExternalId",
+          },
+          sending_policy: {
+            $ref: "#/components/schemas/SendingPolicy",
+          },
+          status: {
+            $ref: "#/components/schemas/StatusSetting",
+          },
+          suggestions: {
+            $ref: "#/components/schemas/Suggestions",
+          },
+          template: {
+            $ref: "#/components/schemas/TemplateSetting",
+          },
+          whatsapp: {
+            $ref: "#/components/schemas/WAChannelProperties",
+          },
+          reactions: {
+            $ref: "#/components/schemas/Reactions",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      FileType: {
+        type: "string",
+        description: "Тип файла",
+        enum: ["none", "image", "video", "file", "audio"],
+        example: "file",
+      },
+      FileBase: {
+        description: "Основная информация о файле",
+        type: "object",
+        properties: {
+          id: {
+            description: "UUID загруженного файла",
+            example: "123e4567-e89b-12d3-a456-426614174000",
+            format: "uuid",
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ID",
+          },
+          size: {
+            description: "Размер файла (в байтах)",
+            example: 640,
+            format: "int",
+            type: "integer",
+          },
+          type: {
+            $ref: "#/components/schemas/FileType",
+          },
+        },
+        required: ["id", "type", "size"],
+      },
+      File: {
+        description: "Информация о файле",
+        allOf: [
+          {
+            $ref: "#/components/schemas/FileBase",
+          },
+          {
+            type: "object",
+            properties: {
+              Url: {
+                description: "URL для скачивания файла",
+                example: "https://test.com/file/1",
+                format: "uri",
+                type: "string",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              mime_type: {
+                description: "MIME-тип файла",
+                example: "text/plain",
+                type: "string",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+            },
+          },
+        ],
+      },
+      TemplateType: {
+        description: "Тип шаблона",
+        type: "string",
+        enum: ["text", "media"],
+        example: "text",
+      },
+      TemplateVerificationStatus: {
+        description: "Статус верификации шаблона",
+        type: "string",
+        enum: ["approved", "pending", "rejected", "paused", "disabled"],
+        example: "approved",
+      },
+      TemplateButtonType: {
+        description: "Тип кнопки",
+        type: "string",
+        enum: ["plain", "phone", "url"],
+        example: "plain",
+      },
+      TemplateButton: {
+        description: "Кнопка шаблона",
+        type: "object",
+        properties: {
+          label: {
+            description: "Название кнопки",
+            type: "string",
+          },
+          type: {
+            $ref: "#/components/schemas/TemplateButtonType",
+          },
+          phone: {
+            type: "string",
+            description: "Номер телефона (для типа кнопки `phone`)",
+          },
+          url: {
+            type: "string",
+            format: "uri",
+            description: "URL (для типа кнопки `url`)",
+          },
+        },
+        required: ["label", "type"],
+      },
+      TemplateButtons: {
+        description: "Список кнопок шаблона",
+        type: "object",
+        properties: {
+          items: {
+            type: "array",
+            items: {
+              $ref: "#/components/schemas/TemplateButton",
+            },
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            example: [
+              {
+                label: "Click me",
+                type: "plain",
+              },
+              {
+                label: "Call us",
+                type: "phone",
+                phone: "+1234567890",
+              },
+              {
+                label: "Visit our website",
+                type: "url",
+                url: "https://example.com",
+              },
+            ],
+          },
+        },
+      },
+      TemplateHeaderContentType: {
+        type: "string",
+        description: "Тип секции заголовка",
+        enum: ["text", "document", "image", "video"],
+        example: "text",
+      },
+      TemplateHeaderContent: {
+        description: "Содержимое заголовка шаблона",
+        type: "object",
+        properties: {
+          type: {
+            $ref: "#/components/schemas/TemplateHeaderContentType",
+          },
+          body: {
+            description: "Текстовое содержимое секции заголовка (для типа контента `text`)",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+        required: ["type"],
+      },
+      TemplateHeader: {
+        description: "Секция заголовка шаблона",
+        type: "object",
+        properties: {
+          content: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/TemplateHeaderContent",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+      },
+      RejectReason: {
+        type: "string",
+        description: "Причина отклонения шаблона (для статуса `Rejected`)",
+        enum: ["abusive_content", "incorrect_category", "invalid_format", "scam"],
+        example: "invalid_format",
+      },
+      TemplateBase: {
+        description: "Базовый шаблон",
+        type: "object",
+        properties: {
+          body: {
+            description: "Тело шаблона",
+            type: "string",
+            example:
+              "Hello {{1}}! Your order #{{2}} for the amount of ${{3}} has been delivered to the pickup point. Thank you for your order!",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            nullable: true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          buttons: {
+            $ref: "#/components/schemas/TemplateButtons",
+          },
+          category: {
+            description: "Категория шаблона",
+            example: "MARKETING",
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          footer: {
+            description: "Подвал шаблона",
+            example: "foo bar",
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          header: {
+            $ref: "#/components/schemas/TemplateHeader",
+          },
+          lang: {
+            description: "Язык шаблона",
+            type: "string",
+            example: "en",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          name: {
+            description: "Название шаблона",
+            type: "string",
+            example: "test template",
+            maxLength: 512,
+            minLength: 1,
+            nullable: true,
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required,min=1,max=512",
+              mod: "trim,escape",
+            },
+          },
+          rejection_reason: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/RejectReason",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,enum-valid",
+              mod: "trim,escape",
+            },
+          },
+          verification_status: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/TemplateVerificationStatus",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,enum-valid",
+            },
+          },
+          template: {
+            type: "array",
+            items: {
+              $ref: "#/components/schemas/TemplateItem",
+            },
+            nullable: true,
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          quality: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/TemplateQuality",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,enum-valid",
+            },
+          },
+        },
+      },
+      Template: {
+        description: "Шаблон",
+        type: "object",
+        required: [
+          "id",
+          "code",
+          "channel_id",
+          "name",
+          "enabled",
+          "type",
+          "body",
+          "verification_status",
+        ],
+        allOf: [
+          {
+            $ref: "#/components/schemas/TemplateBase",
+          },
+          {
+            type: "object",
+            properties: {
+              id: {
+                description: "Идентификатор шаблона",
+                example: 12,
+                format: "int64",
+                type: "integer",
+                // @ts-ignore
+                "x-go-name": "ID",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+                nullable: true,
+              },
+              channel_id: {
+                description: "Идентификатор канала",
+                example: 34,
+                format: "int64",
+                type: "integer",
+                // @ts-ignore
+                "x-go-name": "ChannelID",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+                nullable: true,
+              },
+              enabled: {
+                description: "Индикатор активности шаблона",
+                example: true,
+                type: "boolean",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+                nullable: true,
+              },
+              example: {
+                $ref: "#/components/schemas/TemplateExample",
+              },
+              code: {
+                description: "Уникальный код шаблона",
+                example: "DEMO_TEMPLATE",
+                maxLength: 512,
+                minLength: 1,
+                type: "string",
+                nullable: true,
+              },
+              type: {
+                allOf: [
+                  {
+                    $ref: "#/components/schemas/TemplateType",
+                  },
+                ],
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              lang: {
+                description: "Язык шаблона",
+                example: "en",
+                type: "string",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              category: {
+                description: "Категория шаблона",
+                example: "MARKETING",
+                type: "string",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              rejection_reason: {
+                allOf: [
+                  {
+                    $ref: "#/components/schemas/RejectReason",
+                  },
+                ],
+                // @ts-ignore
+                "x-oapi-codegen-extra-tags": {
+                  binding: "omitempty,enum-valid",
+                },
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              footer: {
+                description: "Подвал шаблона",
+                example: "foo bar",
+                type: "string",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              verification_status: {
+                allOf: [
+                  {
+                    $ref: "#/components/schemas/TemplateVerificationStatus",
+                  },
+                ],
+                // @ts-ignore
+                "x-oapi-codegen-extra-tags": {
+                  binding: "omitempty,enum-valid",
+                },
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+            },
+          },
+        ],
+      },
+      TemplateItemType: {
+        description: "Тип элемента шаблона",
+        type: "integer",
+        format: "uint8",
+        enum: [1, 2],
+        // @ts-ignore
+        "x-enumNames": ["Text", "Var"],
+        example: 1,
+      },
+      TemplateVarType: {
+        description: "Тип переменной шаблона",
+        type: "integer",
+        format: "uint8",
+        enum: [0, 1, 2, 3],
+        // @ts-ignore
+        "x-enumNames": ["Custom", "Name", "Firstname", "Lastname"],
+        example: 0,
+      },
+      TemplateQuality: {
+        description: "Качество шаблона",
+        type: "string",
+        enum: ["pending", "high", "medium", "low"],
+        example: "pending",
+      },
+      TemplateItem: {
+        description: "Элемент шаблона",
+        type: "object",
+        properties: {
+          type: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/TemplateItemType",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              json: "-",
+            },
+          },
+          text: {
+            description: "Текст элемента шаблона (для типа `text`)",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          var: {
+            description: "Переменная шаблона (для типа `var`)",
+            allOf: [
+              {
+                $ref: "#/components/schemas/TemplateVarType",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-go-name": "VarType",
+          },
+        },
+        // @ts-ignore
+        "x-go-type-skip-optional-pointer": true,
+      },
+      TemplateExample: {
+        description: "Пример шаблона",
+        type: "object",
+        properties: {
+          attachments: {
+            description: "Вложения шаблона",
+            items: {
+              $ref: "#/components/schemas/TemplateExampleAttachment",
+            },
+            maxLength: 1,
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          body: {
+            description: "Массив примерных значений тела шаблона",
+            example: ["Max", "e3459", "328"],
+            items: {
+              type: "string",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          buttons: {
+            description: "Массив примерных значений кнопок шаблона",
+            items: {
+              items: {
+                type: "string",
+              },
+              type: "array",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          header: {
+            description: "Массив примерных значений для секции заголовка шаблона",
+            example: ["Alex"],
+            items: {
+              type: "string",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+      },
+      TemplateExampleAttachment: {
+        description: "Пример вложения шаблона",
+        type: "object",
+        properties: {
+          id: {
+            description: "UID загруженного файла",
+            format: "uuid",
+            type: "string",
+          },
+          caption: {
+            description: "Оригинальное имя файла",
+            maxLength: 1024,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+        required: ["id"],
+      },
+      SendingErrorCode: {
+        description: "Код, представляющий возможные ошибки отправки",
+        type: "string",
+        enum: [
+          "general",
+          "customer_not_exists",
+          "reply_timed_out",
+          "spam_suspicion",
+          "access_restricted",
+        ],
+        example: "customer_not_exists",
+      },
+      SendingError: {
+        description: "Подробности ошибки, возникшей в процессе отправки",
+        type: "object",
+        properties: {
+          code: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/SendingErrorCode",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "enum-valid",
+            },
+          },
+          external_code: {
+            description: "Внешний код ошибки",
+            maxLength: 100,
+            example: "130472",
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,max=100",
+            },
+          },
+          message: {
+            description: "Описание ошибки, возникшей при отправке",
+            example: "demo message",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+        },
+      },
+      UserType: {
+        type: "string",
+        description: "Тип пользователя",
+        enum: ["user", "bot", "customer", "channel"],
+        example: "user",
+      },
+      UserRef: {
+        description: "Сведения о пользователе",
+        type: "object",
+        properties: {
+          id: {
+            description: "Идентификатор пользователя",
+            example: 56,
+            format: "int64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-name": "ID",
+          },
+          available: {
+            description:
+              'Индикатор статуса пользователя (только для пользователей типа "пользователь")',
+            example: false,
+            type: "boolean",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          avatar: {
+            description: "Аватар пользователя",
+            example: "https://avatar.demo/demo-avatar",
+            format: "uri",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          email: {
+            description: 'Электронная почта пользователя (только для пользователей типа "клиент")',
+            example: "demo@user.demo",
+            format: "email",
+            type: "string",
+            // @ts-ignore
+            "x-go-type": "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          external_id: {
+            description: "Внешний идентификатор пользователя",
+            example: "eid3459",
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ExternalID",
+          },
+          first_name: {
+            description: 'Имя пользователя (только для типов "клиент" и "пользователь")',
+            example: "John",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          is_blocked: {
+            description:
+              'Индикатор блокировки пользователя (только для пользователей типа "клиент")',
+            example: false,
+            type: "boolean",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          is_system: {
+            description: 'Индикатор системного пользователя (только для пользователей типа "бот")',
+            example: true,
+            type: "boolean",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          is_technical_account: {
+            description:
+              'Индикатор технической учётной записи (только для пользователей типа "пользователь")',
+            example: false,
+            type: "boolean",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          last_name: {
+            description: 'Фамилия пользователя (только для типов "клиент" и "пользователь")',
+            example: "Doe",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          name: {
+            description: "Никнейм пользователя",
+            example: "John D.",
+            type: "string",
+          },
+          phone: {
+            description: "Номер телефона пользователя",
+            example: "541-392-2618",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          type: {
+            $ref: "#/components/schemas/UserType",
+          },
+          username: {
+            description: 'Имя пользователя (только для типа "клиент")',
+            example: "johndoe.",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+        required: ["id", "external_id", "type", "name"],
+      },
+      MessageType: {
+        description: "Тип сообщения",
+        type: "string",
+        enum: ["text", "system", "command", "order", "product", "file", "image", "audio"],
+        example: "text",
+      },
+      Histogram: {
+        type: "array",
+        description: 'Звуковая диаграмма (только для сообщений типа "аудио")',
+        example: [1, 34, 23, 4, 32, 34, 23, 12, 93, 4],
+        items: {
+          format: "int",
+          type: "integer",
+        },
+      },
+      MessageFile: {
+        description: "Прикреплённый файл сообщения",
+        type: "object",
+        properties: {
+          id: {
+            description: "UUID прикреплённого файла",
+            example: "c425d178-eb6f-11ec-8ea0-0242ac120002",
+            format: "uuid",
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ID",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          caption: {
+            description: "Текстовое описание медиа-вложения",
+            example: "demo caption",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          duration: {
+            description: 'Длительность аудиозаписи (только для сообщений типа "аудио")',
+            example: 345,
+            format: "int",
+            type: "integer",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          size: {
+            description: "Размер вложения (в байтах)",
+            example: 34534,
+            format: "int",
+            type: "integer",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          height: {
+            description: 'Высота изображения в пикселях (только для сообщений типа "изображение")',
+            example: 1080,
+            format: "int",
+            type: "integer",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          width: {
+            description: 'Ширина изображения в пикселях (только для сообщений типа "изображение")',
+            example: 1920,
+            format: "int",
+            type: "integer",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          histogram: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/Histogram",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          kind: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/FileType",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          preview_url: {
+            description: "URL для предпросмотра или скачивания файла",
+            example: "https://url.demo/demo-url",
+            format: "uri",
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "PreviewURL",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          transcription: {
+            type: "string",
+            description: "Транскрипция загруженного файла",
+            example: "Sample transcription",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          type: {
+            description: "Тип вложения",
+            example: "application/pdf",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+      },
+      QuoteMessage: {
+        description: "Цитируемое сообщение",
+        type: "object",
+        properties: {
+          id: {
+            description: "Идентификатор цитируемого сообщения",
+            example: 45,
+            format: "int64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-name": "ID",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          content: {
+            description: "Текст сообщения",
+            example: "quote content",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          from: {
+            $ref: "#/components/schemas/UserRef",
+          },
+          items: {
+            description: "Медиа-вложения цитируемого сообщения",
+            items: {
+              $ref: "#/components/schemas/MessageFile",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          time: {
+            description: "Время отправки сообщения",
+            example: "2021-12-29T14:18:41Z",
+            format: "date-time",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          type: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/MessageType",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "enum-valid",
+            },
+          },
+        },
+      },
+      TextMessage: {
+        description: "Текстовое сообщение",
+        type: "object",
+        properties: {
+          content: {
+            description: "Текст сообщения",
+            example: "hi there",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          quote: {
+            $ref: "#/components/schemas/QuoteMessage",
+          },
+        },
+      },
+      MessageScope: {
+        description: "Область видимости сообщения",
+        type: "string",
+        enum: ["undefined", "public", "private"],
+        example: "public",
+      },
+      MessageStatus: {
+        type: "string",
+        description: "Статус сообщения",
+        enum: ["undefined", "received", "sending", "sent", "failed", "seen"],
+        example: "seen",
+      },
+      MessageDialog: {
+        description: "Диалог сообщения",
+        type: "object",
+        properties: {
+          id: {
+            description: "Идентификатор диалога",
+            example: 9,
+            format: "int64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-name": "ID",
+          },
+        },
+        required: ["id"],
+      },
+      MessageErrorCode: {
+        description: "Код ошибки сообщения",
+        type: "string",
+        enum: [
+          "unknown",
+          "network_error",
+          "malformed_response",
+          "async_send_timeout",
+          "general",
+          "customer_not_exists",
+          "reply_timed_out",
+          "spam_suspicion",
+          "access_restricted",
+        ],
+        example: "malformed_response",
+      },
+      MessageError: {
+        description: "Подробности ошибки сообщения (только для сообщений со статусом `failed`)",
+        type: "object",
+        properties: {
+          code: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/MessageErrorCode",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "enum-valid",
+            },
+          },
+          message: {
+            description: "Текстовое описание ошибки",
+            example: "error malformed response",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+        required: ["code"],
+      },
+      SuggestionType: {
+        type: "string",
+        description: "Тип быстрого ответа",
+        enum: ["text", "email", "phone", "url"],
+        example: "phone",
+      },
+      Suggestion: {
+        description: "Предложение быстрого ответа",
+        type: "object",
+        properties: {
+          payload: {
+            description: "Данные быстрого ответа",
+            example: "https://demo-payload.demo",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          title: {
+            description: "Название быстрого ответа",
+            example: "phone number",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          type: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/SuggestionType",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "enum-valid",
+            },
+          },
+        },
+      },
+      MessageTransportAttachments: {
+        description: "Транспортные вложения",
+        properties: {
+          suggestions: {
+            description: "Быстрые ответы",
+            items: {
+              $ref: "#/components/schemas/Suggestion",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+        },
+        type: "object",
+      },
+      MessageOrderDelivery: {
+        description: "Информация о доставке заказа",
+        type: "object",
+        properties: {
+          address: {
+            description: "Адрес доставки",
+            example: "2641 Webster St Berkeley, California(CA), 94705",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          comment: {
+            description: "Комментарий к доставке",
+            example: "demo delivery comment",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          name: {
+            description: "Название способа доставки",
+            example: "dhl",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          price: {
+            $ref: "#/components/schemas/Cost",
+          },
+        },
+      },
+      MessageOrderItem: {
+        description: "Товар заказа",
+        type: "object",
+        properties: {
+          external_id: {
+            description: "Внешний идентификатор товара",
+            example: 45,
+            format: "int64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-name": "ExternalID",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          img: {
+            description: "Изображение товара",
+            example: "https://order-image.demo/demo-order-image",
+            format: "uri",
+            maxLength: 2048,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=2048",
+            },
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          name: {
+            description: "Название товара",
+            example: "demo order item",
+            maxLength: 255,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=255",
+            },
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          price: {
+            $ref: "#/components/schemas/Cost",
+          },
+          quantity: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/Quantity",
+              },
+            ],
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          url: {
+            description: "URL товара",
+            example: "https://order-item.demo/demo-order-item",
+            format: "uri",
+            maxLength: 2048,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=2048",
+            },
+          },
+        },
+      },
+      MessageOrderPayment: {
+        description: "Информация об оплате заказа",
+        type: "object",
+        properties: {
+          amount: {
+            $ref: "#/components/schemas/Cost",
+          },
+          name: {
+            description: "Название оплаты",
+            example: "paid",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          status: {
+            $ref: "#/components/schemas/MessageOrderPaymentStatus",
+          },
+        },
+      },
+      MessageOrderPaymentStatus: {
+        description: "Статус оплаты заказа",
+        type: "object",
+        properties: {
+          name: {
+            description: "Название оплаты",
+            example: "demo-payment-status",
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          payed: {
+            description: "Индикатор выполнения оплаты",
+            example: true,
+            type: "boolean",
+          },
+        },
+      },
+      MessageOrderStatusCode: {
+        description: "Код статуса",
+        type: "string",
+        enum: ["new", "approval", "assembling", "delivery", "complete", "cancel"],
+        example: "approval",
+      },
+      MessageOrderStatus: {
+        description: "Статус заказа",
+        properties: {
+          code: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/MessageOrderStatusCode",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "enum-valid",
+            },
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          name: {
+            description: "Название статуса",
+            example: "approval",
+            maxLength: 255,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=255",
+            },
+          },
+        },
+      },
+      Quantity: {
+        description: "Количество",
+        type: "object",
+        properties: {
+          unit: {
+            description: "Единицы измерения",
+            example: "pcs",
+            maxLength: 16,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=16",
+            },
+          },
+          value: {
+            description: "Количественное значение",
+            example: 5,
+            format: "double",
+            minimum: 0,
+            type: "number",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "gte=0",
+            },
+          },
+        },
+      },
+      Cost: {
+        description: "Представляет денежную сумму с соответствующей валютой",
+        type: "object",
+        properties: {
+          currency: {
+            description: "Код валюты",
+            maxLength: 3,
+            minLength: 3,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required,currency",
+            },
+          },
+          value: {
+            description: "Числовое значение стоимости",
+            example: 256,
+            format: "double",
+            minimum: 0,
+            type: "number",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "gte=0",
+            },
+          },
+        },
+        required: ["currency", "value"],
+      },
+      MessageOrder: {
+        description: "Представляет детали заказа в сообщении",
+        type: "object",
+        properties: {
+          external_id: {
+            description: "Внешний идентификатор заказа",
+            example: 56,
+            format: "int64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-name": "ExternalID",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          cost: {
+            $ref: "#/components/schemas/Cost",
+          },
+          date: {
+            description: "Дата создания заказа",
+            example: "2021-12-29T14:18:37.051393Z",
+            format: "date-time",
+            type: "string",
+          },
+          delivery: {
+            $ref: "#/components/schemas/MessageOrderDelivery",
+          },
+          discount: {
+            $ref: "#/components/schemas/Cost",
+          },
+          items: {
+            description: "Массив товаров заказа",
+            items: {
+              $ref: "#/components/schemas/MessageOrderItem",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          number: {
+            description: "Номер заказа",
+            example: "23546",
+            maxLength: 255,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=255",
+            },
+          },
+          payments: {
+            description: "Массив платежей",
+            items: {
+              $ref: "#/components/schemas/MessageOrderPayment",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+          },
+          status: {
+            $ref: "#/components/schemas/MessageOrderStatus",
+          },
+          url: {
+            description: "URL заказа",
+            example: "https://url.demo/demo-url",
+            format: "uri",
+            maxLength: 2048,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=2048",
+            },
+          },
+        },
+      },
+      MessageProduct: {
+        description: "Описывает товар, упомянутый в сообщении",
+        type: "object",
+        properties: {
+          id: {
+            description: "Идентификатор товара",
+            example: 56,
+            format: "uint64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-name": "ID",
+          },
+          article: {
+            description: "Описание товара",
+            example: "324-DFT-495",
+            maxLength: 128,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=128",
+            },
+          },
+          cost: {
+            $ref: "#/components/schemas/Cost",
+          },
+          img: {
+            description: "URL изображения товара",
+            example: "https://image.demo/demo-image",
+            format: "uri",
+            maxLength: 2048,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=2048",
+            },
+          },
+          name: {
+            type: "string",
+            description: "Название товара",
+            example: "demo product",
+            maxLength: 255,
+            minLength: 1,
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required,min=1,max=255",
+            },
+          },
+          unit: {
+            description: "Единицы измерения товара",
+            maxLength: 16,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=16",
+            },
+          },
+          url: {
+            description: "URL товара",
+            example: "https://product.demo/demo-product",
+            format: "uri",
+            maxLength: 2048,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "max=2048",
+            },
+          },
+        },
+        required: ["id", "name"],
+      },
+      MessageAction: {
+        description: "Определяет возможные действия с сообщением",
+        type: "string",
+        enum: ["edit", "delete", "quote"],
+        example: "edit",
+      },
+      SystemAction: {
+        description: 'Системное действие сообщения (только для сообщений типа "системное")',
+        type: "string",
+        enum: [
+          "dialog_opened",
+          "dialog_closed",
+          "user_joined",
+          "user_left",
+          "dialog_assign",
+          "customer_blocked",
+          "customer_unblocked",
+          "dialog_unassign",
+        ],
+        example: "user_joined",
+      },
+      SystemMessage: {
+        description: "Представляет события, сгенерированные системой в сообщениях",
+        type: "object",
+        properties: {
+          action: {
+            $ref: "#/components/schemas/SystemAction",
+          },
+          responsible: {
+            $ref: "#/components/schemas/UserRef",
+          },
+          user: {
+            $ref: "#/components/schemas/UserRef",
+          },
+        },
+        required: ["action"],
+      },
+      Message: {
+        description: "Содержит детали сообщения",
+        allOf: [
+          {
+            $ref: "#/components/schemas/TextMessage",
+          },
+          {
+            $ref: "#/components/schemas/SystemMessage",
+          },
+          {
+            properties: {
+              id: {
+                description: "Идентификатор сообщения",
+                example: 45,
+                format: "int64",
+                type: "integer",
+                // @ts-ignore
+                "x-go-name": "ID",
+              },
+              actions: {
+                description: "Доступные действия для сообщения",
+                items: {
+                  $ref: "#/components/schemas/MessageAction",
+                },
+                type: "array",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              chat_id: {
+                description: "Идентификатор чата",
+                example: 56,
+                format: "int64",
+                type: "integer",
+                // @ts-ignore
+                "x-go-name": "ChatID",
+              },
+              dialog: {
+                $ref: "#/components/schemas/MessageDialog",
+              },
+              error: {
+                $ref: "#/components/schemas/MessageError",
+              },
+              from: {
+                $ref: "#/components/schemas/UserRef",
+              },
+              is_edit: {
+                description: "Индикатор редактирования сообщения",
+                example: false,
+                type: "boolean",
+              },
+              is_read: {
+                description: "Индикатор прочтения сообщения",
+                example: true,
+                type: "boolean",
+              },
+              items: {
+                items: {
+                  $ref: "#/components/schemas/MessageFile",
+                },
+                type: "array",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              note: {
+                description: "Аннотация медиа-данных (для медиа-сообщений)",
+                example: "demo note",
+                type: "string",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              order: {
+                $ref: "#/components/schemas/MessageOrder",
+              },
+              product: {
+                $ref: "#/components/schemas/MessageProduct",
+              },
+              scope: {
+                $ref: "#/components/schemas/MessageScope",
+              },
+              status: {
+                $ref: "#/components/schemas/MessageStatus",
+              },
+              time: {
+                description: "Время создания сообщения",
+                example: "2022-05-30T22:28:55Z",
+                format: "date-time",
+                type: "string",
+              },
+              transport_attachments: {
+                $ref: "#/components/schemas/MessageTransportAttachments",
+              },
+              type: {
+                $ref: "#/components/schemas/MessageType",
+              },
+            },
+            required: ["id", "time", "type", "scope", "chat_id", "is_read", "is_edit", "status"],
+            type: "object",
+          },
+        ],
+      },
+      Originator: {
+        type: "string",
+        description: "Тип отправителя сообщения",
+        enum: ["customer", "channel", "user"],
+        example: "customer",
+      },
+      Utm: {
+        description: "Параметры UTM для отслеживания маркетинговых кампаний",
+        type: "object",
+        properties: {
+          campaign: {
+            description: "Кампания",
+            example: "spring_sale",
+            maxLength: 255,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=1,max=255",
+            },
+          },
+          content: {
+            description: "Содержание рекламы",
+            example: "textlink",
+            maxLength: 255,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=1,max=255",
+            },
+          },
+          medium: {
+            description: "Среда",
+            example: "cpc",
+            maxLength: 255,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=1,max=255",
+            },
+          },
+          source: {
+            description: "Источник",
+            example: "Google",
+            maxLength: 255,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=1,max=255",
+            },
+          },
+          term: {
+            description: "Ключевое слово",
+            example: "running",
+            maxLength: 255,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=1,max=255",
+            },
+          },
+        },
+      },
+      SendMessageRequestCustomer: {
+        description: "Содержит информацию о клиенте, отправившем сообщение",
+        type: "object",
+        properties: {
+          avatar: {
+            description: "URL аватара отправителя",
+            example: "https://avatar.demo/customer-avatar",
+            format: "uri",
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          country: {
+            description: "Код страны отправителя",
+            example: "US",
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          email: {
+            description: "Электронная почта отправителя",
+            example: "customer@customer.demo",
+            format: "email",
+            type: "string",
+            // @ts-ignore
+            "x-go-type": "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          external_id: {
+            description: "Внешний идентификатор отправителя",
+            example: "cs9109",
+            maxLength: 64,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ExternalID",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required,min=1,max=64",
+              mod: "trim,escape",
+            },
+          },
+          secondary_external_ids: {
+            description: "Массив дополнительных внешних идентификаторов клиентов",
+            items: {
+              type: "string",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-go-name": "SecondaryExternalIDs",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,dive,min=0,max=64",
+            },
+          },
+          first_name: {
+            description: "Имя отправителя",
+            example: "John",
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,max=255",
+              mod: "trim,escape",
+            },
+          },
+          language: {
+            description: "Язык отправителя",
+            example: "en",
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          last_name: {
+            description: "Фамилия отправителя",
+            example: "Doe",
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,max=255",
+              mod: "trim,escape",
+            },
+          },
+          nickname: {
+            description: "Никнейм отправителя",
+            example: "John Doe",
+            maxLength: 255,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required,min=1,max=255",
+              mod: "trim,escape",
+            },
+          },
+          phone: {
+            description: "Телефон отправителя",
+            example: "+14844578894",
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          profile_url: {
+            description: "URL профиля отправителя",
+            example: "https://profile.demo/customer-profile",
+            format: "uri",
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ProfileURL",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              mod: "trim,escape",
+            },
+          },
+          utm: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/Utm",
+              },
+            ],
+            // @ts-ignore
+            "x-omitempty": false,
+          },
+        },
+        required: ["external_id", "nickname"],
+      },
+      SendMessageRequestMessageFileItem: {
+        description: "Представляет файл-вложение в сообщении",
+        properties: {
+          caption: {
+            description: "Описание медиа-вложения в сообщении",
+            maxLength: 1024,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "min=1,max=1024",
+              mod: "trim,escape",
+            },
+          },
+          id: {
+            description: "UUID загруженного файла",
+            format: "uuid",
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ID",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required",
+            },
+          },
+        },
+        required: ["id"],
+      },
+      SendMessageRequestMessage: {
+        description: "Определяет содержимое сообщения в запросе на отправку",
+        type: "object",
+        properties: {
+          text: {
+            description: "Текст сообщения",
+            example: "demo text",
+            maxLength: 65535,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "min=0,max=65535",
+            },
+          },
+          product: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/MessageProduct",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required_if=Type product",
+            },
+          },
+          order: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/MessageOrder",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required_if=Type order",
+            },
+          },
+          items: {
+            description: "Список медиа-объектов в сообщении",
+            items: {
+              $ref: "#/components/schemas/SendMessageRequestMessageFileItem",
+            },
+            type: "array",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=1,max=20,dive",
+            },
+          },
+          note: {
+            description: "Описание сообщения (для сообщений с медиа-данными)",
+            maxLength: 64000,
+            minLength: 1,
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-go-type-skip-optional-pointer": true,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=1,max=64000",
+              mod: "trim,escape",
+            },
+          },
+          created_at: {
+            description: "Дата создания сообщения",
+            example: "2021-08-02T10:11:12",
+            format: "date-time",
+            type: "string",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty",
+            },
+          },
+          external_id: {
+            description: "Внешний идентификатор сообщения",
+            example: "m45418",
+            maxLength: 255,
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ExternalID",
+            // @ts-ignore
+            "x-omitempty": false,
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,min=0,max=255",
+            },
+          },
+          page_link: {
+            description: "Ссылка на страницу, с которой было отправлено сообщение",
+            example: "https://our.local.site/product/1",
+            type: "string",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,web_url_length,web_url",
+            },
+          },
+          type: {
+            allOf: [
+              {
+                $ref: "#/components/schemas/MessageType",
+              },
+            ],
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "required,enum-valid",
+            },
+          },
+        },
+        required: ["type", "text", "items"],
+      },
+      EditMessageRequestMessage: {
+        description: "Определяет содержимое сообщения в запросе на редактирование",
+        allOf: [
+          {
+            $ref: "#/components/schemas/MessageIdentifier",
+          },
+          {
+            type: "object",
+            properties: {
+              edited_at: {
+                description: "Дата и время последнего обновления сообщения",
+                example: 1652767093,
+                format: "int64",
+                type: "integer",
+                // @ts-ignore
+                "x-go-type-skip-optional-pointer": true,
+              },
+              page_link: {
+                description: "Ссылка на страницу, с которой было отправлено сообщение",
+                example: "https://our.local.site/product/1",
+                type: "string",
+                // @ts-ignore
+                "x-oapi-codegen-extra-tags": {
+                  mod: "trim,escape",
+                },
+              },
+              text: {
+                description: "Текст сообщения",
+                example: "Lorem Ipsum",
+                maxLength: 65535,
+                minLength: 1,
+                type: "string",
+                // @ts-ignore
+                "x-oapi-codegen-extra-tags": {
+                  binding: "required,min=1,max=65535",
+                  mod: "trim,escape",
+                },
+              },
+            },
+            required: ["text"],
+          },
+        ],
+      },
+      MessageIdentifier: {
+        description: "Идентификатор сообщения",
+        type: "object",
+        properties: {
+          id: {
+            description: "Идентификатор сообщения в MessageGateway",
+            example: 45,
+            format: "int64",
+            type: "integer",
+            // @ts-ignore
+            "x-go-name": "ID",
+          },
+          external_id: {
+            description: "Внешний идентификатор сообщения",
+            example: "rm2884",
+            maxLength: 255,
+            type: "string",
+            // @ts-ignore
+            "x-go-name": "ExternalID",
+            // @ts-ignore
+            "x-oapi-codegen-extra-tags": {
+              binding: "omitempty,max=255",
+              mod: "trim,escape",
+            },
+          },
+        },
+      },
+    },
+    requestBodies: {
+      ActivateChannelRequest: {
+        description: "Запрос на активацию канала",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                id: {
+                  description: "Идентификатор канала",
+                  example: 146,
+                  format: "int64",
+                  minimum: 0,
+                  type: "integer",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "min=0",
+                  },
+                  // @ts-ignore
+                  "x-go-name": "ID",
+                },
+                external_id: {
+                  description: "Внешний идентификатор канала",
+                  example: "ac3249",
+                  maxLength: 64,
+                  type: "string",
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=64",
+                    mod: "trim,escape",
+                  },
+                  // @ts-ignore
+                  "x-go-type-skip-optional-pointer": true,
+                  // @ts-ignore
+                  "x-go-name": "ExternalID",
+                },
+                name: {
+                  description: "Название канала",
+                  example: "demo channel",
+                  maxLength: 100,
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=100",
+                    mod: "trim,escape",
+                  },
+                },
+                avatar_url: {
+                  description: "URL аватара канала",
+                  example: "https://avatar.demo/avatar",
+                  format: "uri",
+                  maxLength: 255,
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=255",
+                    mod: "trim,escape",
+                  },
+                },
+                settings: {
+                  $ref: "#/components/schemas/ChannelSettings",
+                },
+                type: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/ChannelType",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required,enum-valid",
+                  },
+                },
+              },
+              required: ["id", "type"],
+            },
+          },
+        },
+      },
+      UpdateChannelRequest: {
+        description: "Запрос на обновление канала",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                external_id: {
+                  description: "Внешний идентификатор",
+                  example: "ac3249",
+                  maxLength: 64,
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=64",
+                    mod: "trim,escape",
+                  },
+                  // @ts-ignore
+                  "x-go-name": "ExternalID",
+                },
+                name: {
+                  description: "Название канала",
+                  example: "demo channel",
+                  maxLength: 100,
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=100",
+                    mod: "trim,escape",
+                  },
+                },
+                avatar_url: {
+                  description: "URL аватара канала",
+                  example: "https://avatar.demo/avatar",
+                  maxLength: 255,
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=255",
+                    mod: "trim,escape",
+                  },
+                },
+                settings: {
+                  $ref: "#/components/schemas/ChannelSettings",
+                },
+                type: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/ChannelType",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,enum-valid",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      UploadFileByUrlRequest: {
+        description: "Загрузить файл по URL",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                url: {
+                  description: "URL источника загрузки",
+                  example: "https://url.demo/demo-url",
+                  format: "uri",
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "web_url",
+                    mod: "trim,escape",
+                  },
+                },
+              },
+              required: ["url"],
+            },
+          },
+        },
+      },
+      ActivateTemplateRequest: {
+        description: "Запрос на активацию нового шаблона",
+        content: {
+          "application/json": {
+            schema: {
+              allOf: [
+                {
+                  $ref: "#/components/schemas/TemplateBase",
+                },
+                {
+                  type: "object",
+                  properties: {
+                    code: {
+                      description: "Уникальный код шаблона",
+                      example: "DEMO_TEMPLATE",
+                      maxLength: 512,
+                      minLength: 1,
+                      type: "string",
+                      // @ts-ignore
+                      "x-go-type-skip-optional-pointer": true,
+                      // @ts-ignore
+                      "x-oapi-codegen-extra-tags": {
+                        binding: "required,min=1,max=512",
+                        mod: "trim,escape",
+                      },
+                    },
+                    type: {
+                      allOf: [
+                        {
+                          $ref: "#/components/schemas/TemplateType",
+                        },
+                      ],
+                      // @ts-ignore
+                      "x-oapi-codegen-extra-tags": {
+                        binding: "required",
+                      },
+                    },
+                  },
+                },
+              ],
+              required: ["name", "code", "type"],
+            },
+          },
+        },
+      },
+      UpdateTemplateRequest: {
+        description: "Запрос на обновление существующего шаблона",
+        content: {
+          "application/json": {
+            schema: {
+              allOf: [
+                {
+                  $ref: "#/components/schemas/TemplateBase",
+                },
+                {
+                  type: "object",
+                  properties: {
+                    verification_status: {
+                      allOf: [
+                        {
+                          $ref: "#/components/schemas/TemplateVerificationStatus",
+                        },
+                      ],
+                      // @ts-ignore
+                      "x-oapi-codegen-extra-tags": {
+                        binding: "omitempty,enum-valid",
+                      },
+                      // @ts-ignore
+                      "x-go-type-skip-optional-pointer": true,
+                    },
+                  },
+                },
+              ],
+              required: ["name", "verification_status"],
+            },
+          },
+        },
+      },
+      AckMessageRequest: {
+        description: "Запрос на подтверждение получения сообщения",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel: {
+                  description: "Идентификатор канала отправки",
+                  example: 92,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                created_at: {
+                  description: "Дата и время отправки",
+                  example: "2021-08-02T10:11:12",
+                  format: "date-time",
+                  type: "string",
+                  // @ts-ignore
+                  "x-omitempty": false,
+                },
+                error: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/SendingError",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-omitempty": false,
+                },
+                external_message_id: {
+                  deprecated: true,
+                  description: "Внешний идентификатор сообщения",
+                  example: "em3948",
+                  type: "string",
+                  // @ts-ignore
+                  "x-go-name": "ExternalMessageID",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=255",
+                    mod: "trim,escape",
+                  },
+                },
+                transport_message_id: {
+                  description: "Идентификатор сообщения в транспортной системе",
+                  example: "ydi73-end72-lkmxd-k2en8-827bs",
+                  maxLength: 255,
+                  type: "string",
+                  // @ts-ignore
+                  "x-go-name": "TransportMessageID",
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,max=255",
+                    mod: "trim,escape",
+                  },
+                },
+                message: {
+                  $ref: "#/components/schemas/MessageIdentifier",
+                },
+              },
+              required: ["channel"],
+            },
+          },
+        },
+      },
+      MarkMessageReadRequest: {
+        description: "Запрос на пометку сообщения как прочитанного",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel_id: {
+                  description: "Идентификатор канала отправки",
+                  example: 92,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-go-name": "ChannelID",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/MessageIdentifier",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+              },
+              required: ["message", "channel_id"],
+            },
+          },
+        },
+      },
+      MarkMessagesReadUntilRequest: {
+        description: "Запрос на пометку сообщений как прочитанных до указанной даты",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel_id: {
+                  description: "Идентификатор канала",
+                  example: 145,
+                  format: "int64",
+                  minimum: 1,
+                  type: "integer",
+                  // @ts-ignore
+                  "x-go-name": "ChannelID",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required,min=1",
+                  },
+                },
+                customer_external_id: {
+                  description: "Внешний идентификатор клиента",
+                  example: "cs9109",
+                  type: "string",
+                  // @ts-ignore
+                  "x-go-name": "CustomerExternalID",
+                  // @ts-ignore
+                  "x-omnitype": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                    mod: "trim,escape",
+                  },
+                },
+                until: {
+                  description: "Дата, до которой сообщения считаются прочитанными",
+                  example: "2022-10-15T23:20:50.52Z",
+                  format: "date-time",
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+              },
+              required: ["customer_external_id", "channel_id", "until"],
+            },
+          },
+        },
+      },
+      RestoreMessageRequest: {
+        description: "Запрос на восстановление сообщения",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel_id: {
+                  description: "Идентификатор канала отправки",
+                  example: 92,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-go-name": "ChannelID",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/MessageIdentifier",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+              },
+              required: ["message", "channel_id"],
+            },
+          },
+        },
+      },
+      SendMessageRequest: {
+        description: "Запрос на восстановление сообщения",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel: {
+                  description: "Идентификатор канала",
+                  example: 618,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                customer: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/SendMessageRequestCustomer",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty",
+                  },
+                },
+                external_chat_id: {
+                  description: "Внешний идентификатор",
+                  example: "c7832",
+                  maxLength: 64,
+                  type: "string",
+                  // @ts-ignore
+                  "x-go-name": "ExternalChatID",
+                  // @ts-ignore
+                  "x-go-type-skip-optional-pointer": true,
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "min=0,max=64",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/SendMessageRequestMessage",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                originator: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/Originator",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-go-type-skip-optional-pointer": true,
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "enum-valid",
+                  },
+                },
+                quote: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/MessageIdentifier",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-omitempty": false,
+                },
+                reply_deadline: {
+                  description: "Крайний срок для ответа",
+                  example: "2021-08-02T10:11:12",
+                  format: "date-time",
+                  type: "string",
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty",
+                  },
+                },
+                secondary_external_chat_ids: {
+                  description: "Массив дополнительных внешних идентификаторов чата",
+                  items: {
+                    type: "string",
+                  },
+                  type: "array",
+                  // @ts-ignore
+                  "x-go-type-skip-optional-pointer": true,
+                  // @ts-ignore
+                  "x-go-name": "SecondaryExternalChatIDs",
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,dive,min=0,max=64",
+                  },
+                },
+                user: {
+                  deprecated: true,
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/SendMessageRequestCustomer",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty",
+                  },
+                },
+              },
+              required: ["message", "channel"],
+            },
+          },
+        },
+      },
+      DeleteMessageRequest: {
+        description: "Запрос на удаление сообщения",
+        content: {
+          "application/json": {
+            schema: {
+              properties: {
+                channel: {
+                  description: "Идентификатор канала",
+                  example: 88,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/MessageIdentifier",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+              },
+              required: ["message", "channel"],
+            },
+          },
+        },
+      },
+      EditMessageRequest: {
+        description: "Запрос на редактирование сообщения",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel: {
+                  description: "Канал сообщения",
+                  example: 46,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/EditMessageRequestMessage",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+              },
+              required: ["message", "channel"],
+            },
+          },
+        },
+      },
+      SendHistoryMessageRequest: {
+        description: "Запрос на отправку сообщения из истории",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel_id: {
+                  description: "Идентификатор канала",
+                  example: 618,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-go-name": "ChannelID",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                customer: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/SendMessageRequestCustomer",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                external_chat_id: {
+                  description: "Внешний идентификатор",
+                  example: "c7832",
+                  maxLength: 64,
+                  type: "string",
+                  // @ts-ignore
+                  "x-go-name": "ExternalChatID",
+                  // @ts-ignore
+                  "x-go-type-skip-optional-pointer": true,
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,min=0,max=64",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/SendMessageRequestMessage",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                originator: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/Originator",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-go-type-skip-optional-pointer": true,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty,enum-valid",
+                  },
+                },
+                quote: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/MessageIdentifier",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty",
+                  },
+                },
+                reply_deadline: {
+                  description: "Крайний срок для ответа",
+                  example: "2021-08-02T10:11:12",
+                  format: "date-time",
+                  type: "string",
+                  // @ts-ignore
+                  "x-go-name": "ReplyDeadline",
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty",
+                  },
+                },
+              },
+              required: ["message", "channel_id"],
+            },
+          },
+        },
+      },
+      AddReactionRequest: {
+        description: "Запрос на добавление реакции",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel: {
+                  description: "Идентификатор канала отправки",
+                  example: 88,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/MessageIdentifier",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                reaction: {
+                  description: "Удаляемая реакция",
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+              },
+              required: ["message", "channel", "reaction"],
+            },
+          },
+        },
+      },
+      DeleteReactionRequest: {
+        description: "Запрос на удаление реакции",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                channel: {
+                  description: "Идентификатор канала отправки",
+                  example: 88,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                message: {
+                  allOf: [
+                    {
+                      $ref: "#/components/schemas/MessageIdentifier",
+                    },
+                  ],
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "required",
+                  },
+                },
+                reaction: {
+                  description: "Удаляемая реакция",
+                  type: "string",
+                  // @ts-ignore
+                  "x-omitempty": false,
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    binding: "omitempty",
+                  },
+                },
+              },
+              required: ["message", "channel"],
+            },
+          },
+        },
+      },
+    },
+    responses: {
+      EmptyResponse: {
+        description: "Успешно",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {},
+            },
+          },
+        },
+      },
+      ErrorResponse: {
+        description: "Ошибка ответа",
+        content: {
+          "application/json": {
+            schema: {
+              properties: {
+                errors: {
+                  description: "Список ошибок",
+                  items: {
+                    type: "string",
+                  },
+                  type: "array",
+                },
+              },
+              type: "object",
+            },
+          },
+        },
+      },
+      ChannelsListResponse: {
+        description: "Список каналов",
+        content: {
+          "application/json": {
+            schema: {
+              type: "array",
+              items: {
+                $ref: "#/components/schemas/Channel",
+              },
+              // @ts-ignore
+              "x-go-type-skip-optional-pointer": true,
+            },
+          },
+        },
+      },
+      ActivateChannelResponse: {
+        description: "Активированный канал",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                id: {
+                  description: "Идентификатор канала",
+                  example: 34,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-go-name": "ID",
+                },
+                activated_at: {
+                  description: "Дата и время активации канала",
+                  example: "2006-01-02T15:04:05Z07:00",
+                  format: "date-time",
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    time_format: "2006-01-02T15:04:05Z07:00",
+                  },
+                },
+              },
+              required: ["id", "activated_at"],
+            },
+          },
+        },
+      },
+      DeactivateChannelResponse: {
+        description: "Деактивированный канал",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                id: {
+                  description: "Идентификатор деактивированного канала",
+                  example: 34,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-go-name": "ID",
+                },
+                deactivated_at: {
+                  description: "Дата и время деактивации канала",
+                  example: "2006-01-02T15:04:05Z07:00",
+                  format: "date-time",
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    time_format: "2006-01-02T15:04:05Z07:00",
+                  },
+                },
+              },
+              required: ["id", "deactivated_at"],
+            },
+          },
+        },
+      },
+      UpdateChannelResponse: {
+        description: "Обновленный канал",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                id: {
+                  description: "Идентификатор канала",
+                  example: 23,
+                  format: "int64",
+                  type: "integer",
+                  // @ts-ignore
+                  "x-go-name": "ID",
+                },
+                updated_at: {
+                  description: "Дата и время последнего обновления",
+                  example: "2006-01-02T15:04:05Z07:00",
+                  format: "date-time",
+                  type: "string",
+                  // @ts-ignore
+                  "x-oapi-codegen-extra-tags": {
+                    time_format: "2006-01-02T15:04:05Z07:00",
+                  },
+                },
+              },
+              required: ["id", "updated_at"],
+            },
+          },
+        },
+      },
+      UploadFileResponse: {
+        description: "Информация о загруженном файле",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/FileBase",
+            },
+          },
+        },
+      },
+      FileResponse: {
+        description: "Информация о файле",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/File",
+            },
+          },
+        },
+      },
+      TemplateListResponse: {
+        description: "Список шаблонов",
+        content: {
+          "application/json": {
+            schema: {
+              items: {
+                $ref: "#/components/schemas/Template",
+              },
+              type: "array",
+            },
+          },
+        },
+      },
+      MarkMessagesReadUntilResponse: {
+        description: "Список идентификаторов сообщений, отмеченных как прочитанные",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                ids: {
+                  description: "Идентификаторы сообщений, отмеченных как прочитанные",
+                  items: {
+                    format: "int64",
+                    type: "integer",
+                  },
+                  type: "array",
+                  // @ts-ignore
+                  "x-go-name": "IDs",
+                },
+              },
+              required: ["ids"],
+            },
+          },
+        },
+      },
+      MessageResponse: {
+        description: "Информация о сообщении",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Message",
+            },
+          },
+        },
+      },
+      SendMessageResponse: {
+        description: "Информация об отправленном сообщении",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message_id: {
+                  description: "Идентификатор созданного сообщения",
+                  example: 34,
+                  format: "int64",
+                  type: "integer",
+                },
+                time: {
+                  description: "Время создания сообщения",
+                  example: "2021-08-02T10:11:12",
+                  format: "date-time",
+                  type: "string",
+                },
+                warnings: {
+                  description: "Предупреждения, возникшие при создании сообщения",
+                  items: {
+                    type: "string",
+                  },
+                  type: "array",
+                  // @ts-ignore
+                  "x-go-type-skip-optional-pointer": true,
+                },
+              },
+              required: ["message_id", "time"],
+            },
+          },
+        },
+      },
+    },
+  },
+};
