@@ -1,0 +1,90 @@
+{
+  "name": "@integratop/retailcrm-transport-api-schema",
+  "version": "0.0.0",
+  "description": "RetailCRM Transport API OpenApi Specification",
+  "private": true,
+  "author": {
+    "name": "Dmitriy Chudnyi",
+    "url": "https://www.chudnyi.com",
+    "email": "dmitriy@chudnyi.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "retailcrm",
+    "api",
+    "schema",
+    "rest",
+    "json",
+    "specification",
+    "bot",
+    "openapi",
+    "open-api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/integratop/retailcrm-transport-api-schema.git"
+  },
+  "scripts": {
+    "clean": "rm -fr dist",
+    "download-schema": "scripts/download-schema.ts ${RETAIL_CRM_TRANSPORT_API_SCHEMA_URL?} > src/schemas/schema-raw.json",
+    "copy-schema": "cp src/schemas/schema-raw.json src/schemas/schema.json",
+    "patch-schema-create": "git diff -- src/schemas/schema.json > src/schemas/schema.patch",
+    "patch-schema": "git apply src/schemas/schema.patch",
+    "gen-schema-ts": "scripts/gen-schema-ts.ts < src/schemas/schema.json > src/schema.ts",
+    "pretty-schema-ts": "pnpm prettier --write src/schema.ts",
+    "compile": "tsdown",
+    "strip-comments": "scripts/strip-comments.ts ./dist/*.{js,d.ts}",
+    "pretty-dist": "pnpm prettier --write ./dist/*.{js,d.ts}",
+    "copy-dist-files": "cp -r README.md LICENSE src/schemas ./dist",
+    "gen-package-json": "scripts/gen-package-json.ts < package.json > dist/package.json",
+    "src": "pnpm copy-schema && echo pnpm patch-schema && pnpm gen-schema-ts && pnpm pretty-schema-ts",
+    "dist": "pnpm strip-comments && pnpm pretty-dist && pnpm copy-dist-files && pnpm gen-package-json",
+    "build": "pnpm src && pnpm compile && pnpm dist",
+    "lint": "tsc",
+    "test": "vitest --run",
+    "test-node": "pkgx +nodejs.org@14.21.3 /usr/bin/env -S sh -c 'dist/cli.js --json > /dev/null && dist/cli.js --yaml > /dev/null'"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "openapi-types": "^12.1.3",
+    "yaml": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.1",
+    "@types/strip-comments": "2.0.4",
+    "prettier": "3.6.2",
+    "strip-comments": "2.0.1",
+    "tsdown": "0.14.2",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
+  },
+  "engines": {
+    "node": ">= 24.0.0"
+  },
+  "type": "module",
+  "bin": {
+    "retailcrm-transport-api-schema": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json",
+    "./schemas/schema.json": "./src/schemas/schema.json"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "private": false,
+    "exports": {
+      ".": "./dist/index.js",
+      "./package.json": "./package.json",
+      "./schemas/schema.json": "./src/schemas/schema.json"
+    },
+    "engines": {
+      "node": ">= 14.21.3"
+    }
+  },
+  "packageManager": "pnpm@10.15.1"
+}
