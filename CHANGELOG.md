@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 (2025-10-06)
+
+
+### Features
+
+* init ([08554e3](https://github.com/integratop/retailcrm-transport-api-schema/commit/08554e3bf82d676e19cf0a77d6af55af4d01cc10))
+
 ## [1.1.0](https://github.com/integratop/retailcrm-bot-api-schema/compare/v1.0.0...v1.1.0) (2025-09-09)
 
 
